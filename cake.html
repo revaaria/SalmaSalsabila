@@ -376,6 +376,43 @@
         box-shadow: 0 5px 10px rgba(255, 51, 102, 0.4);
       }
 
+      /* Floating Music Button CSS */
+      .music-control {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+      }
+
+      .music-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff85a2, #ff3366);
+        border: 2px solid white;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(255, 51, 102, 0.4);
+        transition: all 0.3s ease;
+      }
+
+      .music-btn:hover {
+        transform: scale(1.1);
+      }
+
+      .music-btn.playing i {
+        animation: rotateMusic 4s linear infinite;
+      }
+
+      @keyframes rotateMusic {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
       /* Improved Responsive Design */
       @media (max-width: 768px) {
         .cake-container {
@@ -458,6 +495,12 @@
           font-size: 14px;
           white-space: nowrap;
         }
+        
+        .music-btn {
+          width: 40px;
+          height: 40px;
+          font-size: 16px;
+        }
       }
 
       /* Extra small devices */
@@ -529,10 +572,20 @@
   </head>
   <body
     __processed_7adb44bb-c731-4b39-a819-dea3d74cf4d5__="true"
-    bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWllZ29tY29uIiwiYWRibG9ja2VyU3RhdHVzIjp7IkRJU1BMQVkiOiJkaXNhYmxlZCIsIkZBQ0VCT09LIjoiZGlzYWJsZWQiLCJUV0lUVEVSIjoiZGlzYWJsZWQiLCJSRURESVQiOiJkaXNhYmxlZCIsIlBJTlRFUkVTVCI6ImRpc2FibGVkIiwiSU5TVEFHUkFNIjoiZGlzYWJsZWQiLCJMSU5LRURJTiI6ImRpc2FibGVkIiwiQ09ORklHIjoiZGlzYWJsZWQifSwidmVyc2lvbiI6IjIuMC4yMiIsInNjb3JlIjoyMDAyMn1d"
+    bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWllZ29tY29uIiwiYWRibG9ja2VyU3RhdHVzIjp7IkRJU1BMQVkiOiJkaXNhYmxlZCIsIkZBQ0VCT09LIjoiZGlzYWJsZWQiLCJUV0lUVEVSIjoiZGlzYWJsZWQiLCJSRURESVQiOiJkaXNhYmxlZCIsIlBJTlRFUkVTVCI6ImRpc2FibGVkIiwiSU5TVEFHUkFNIjoiZGlzYWJsZWQiLCJMSU5LRURJTiI6ImRpc2FibGVkIiwiY09ORklHIjoiZGlzYWJsZWQifSwidmVyc2lvbiI6IjIuMC4yMiIsInNjb3JlIjoyMDAyMn1d"
     data-new-gr-c-s-check-loaded="14.1235.0"
     data-gr-ext-installed=""
   >
+    <!-- Audio Source Element -->
+    <audio id="backsound" src="https://cdn.pixabay.com/download/audio/2026/01/22/audio_25e64d5b94.mp3?filename=nastelbom-happy-birthday-471481.mp3" loop></audio>
+
+    <!-- Floating Music Button -->
+    <div class="music-control">
+      <button class="music-btn" id="musicBtn" onclick="toggleMusic()">
+        <i class="fas fa-music"></i>
+      </button>
+    </div>
+
     <!-- Balloons and Confetti will be added by JavaScript -->
 
     <!-- Birthday Cake -->
@@ -676,12 +729,23 @@
       const totalCandles = 5;
       let allCandlesBlown = false;
 
+      // Audio Elements
+      const audio = document.getElementById("backsound");
+      const musicBtn = document.getElementById("musicBtn");
+
       // Initialize the page when it loads
       document.addEventListener("DOMContentLoaded", function () {
         createCandles();
         createBalloons();
         createConfetti();
         createDecorations();
+
+        // Autoplay logic (Will activate automatically if user has interacted with the domain before)
+        document.body.addEventListener("click", function() {
+           if(audio.paused) {
+               playMusic();
+           }
+        }, { once: true }); // triggers only on the first user interaction
 
         // Add event listeners for candle interaction
         document.querySelectorAll(".candle").forEach((candle) => {
@@ -720,9 +784,34 @@
         });
       });
 
+      // Music Control Functions
+      function playMusic() {
+        audio.play().then(() => {
+          musicBtn.classList.add("playing");
+          musicBtn.innerHTML = '<i class="fas fa-music"></i>';
+        }).catch(err => {
+          console.log("Autoplay dicegah oleh browser. Membutuhkan interaksi pengguna.");
+        });
+      }
+
+      function toggleMusic() {
+        if (audio.paused) {
+          audio.play();
+          musicBtn.classList.add("playing");
+          musicBtn.innerHTML = '<i class="fas fa-music"></i>';
+        } else {
+          audio.pause();
+          musicBtn.classList.remove("playing");
+          musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        }
+      }
+
       // Create candles for the cake
       function createCandles() {
         const candleContainer = document.getElementById("candleContainer");
+
+        // Membersihkan container bawaan HTML statis agar tidak double saat di-render JS
+        candleContainer.innerHTML = '';
 
         for (let i = 0; i < totalCandles; i++) {
           const candle = document.createElement("div");
@@ -887,17 +976,12 @@
 
       // Navigation functions
       function goBack() {
-        // Replace with actual back URL
-
         window.location.href = "memorylane.html";
       }
 
       function goNext() {
-        // Replace with actual next URL
-
         window.location.href = "letter.html";
       }
     </script>
-
-    </body>
+  </body>
 </html>
