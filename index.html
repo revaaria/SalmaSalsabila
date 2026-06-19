@@ -16,6 +16,60 @@
         
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <!-- CSS Tambahan untuk Tombol Audio Estetik -->
+    <style>
+        .floating-audio {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 10px 15px 10px 10px;
+            border-radius: 50px;
+            box-shadow: 0 8px 20px rgba(255, 107, 129, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .floating-audio:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 129, 0.3);
+        }
+
+        .floating-audio button {
+            background: #ff6b81;
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1rem;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(255, 107, 129, 0.4);
+        }
+
+        .floating-audio button:hover {
+            background: #ff4757;
+            transform: scale(1.05);
+        }
+
+        .floating-audio input[type="range"] {
+            accent-color: #ff6b81;
+            width: 80px;
+            cursor: pointer;
+            height: 5px;
+            border-radius: 5px;
+            outline: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -134,8 +188,9 @@
 
     </div>
 
-    <div class="audio-controls">
-        <button id="play-pause"><i class="play-icon">▶️</i></button>
+    <!-- Audio dan Kontrol Audio dipindahkan ke sini -->
+    <div class="floating-audio">
+        <button id="play-pause"><i class="fa-solid fa-play" id="play-icon"></i></button>
         <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5">
     </div>
 
@@ -149,6 +204,7 @@
         // --- 1. AUDIO CONTROLS ---
         const audio = document.getElementById('birthday-song');
         const playPauseBtn = document.getElementById('play-pause');
+        const playIcon = document.getElementById('play-icon');
         const volumeControl = document.getElementById('volume');
         let isPlaying = false;
 
@@ -159,7 +215,8 @@
                 audio.play()
                     .then(() => {
                         isPlaying = true;
-                        playPauseBtn.innerHTML = '<i class="play-icon">⏸️</i>';
+                        playIcon.classList.remove('fa-play');
+                        playIcon.classList.add('fa-pause');
                     })
                     .catch(error => {
                         console.log("Audio play failed due to autoplay restrictions:", error);
@@ -170,10 +227,12 @@
         playPauseBtn.addEventListener('click', () => {
             if (isPlaying) {
                 audio.pause();
-                playPauseBtn.innerHTML = '<i class="play-icon">▶️</i>';
+                playIcon.classList.remove('fa-pause');
+                playIcon.classList.add('fa-play');
             } else {
                 audio.play();
-                playPauseBtn.innerHTML = '<i class="play-icon">⏸️</i>';
+                playIcon.classList.remove('fa-play');
+                playIcon.classList.add('fa-pause');
             }
             isPlaying = !isPlaying;
         });
@@ -184,119 +243,121 @@
 
         // --- 2. FUNCTION NEXT PAGE ---
         function goToNextPage() {
-            // Animasi tombol sebentar sebelum pindah halaman
             gsap.to('.next-button', {
                 scale: 1.2,
                 yoyo: true,
                 repeat: 1,
                 duration: 0.3,
                 onComplete: () => {
-                    // Mengarahkan langsung ke file selanjutnya
                     window.location.href = "memorylane.html";
                 }
             });
         }
     </script>
-</body>
-<script>
-    let datetxt = "24 Juni 2026";
-    let datatxtletter = "My love. You are a very special girl. I always silently thank you for coming into my life. Today, I wish you all the best, lots of health, and lots of joy. I always hope we will celebrate many more birthdays like this together. Happy birthday to you.💕";
-    let titleLetter = "To you";
-    let charArrDate = datetxt.split('');
-    let charArrDateLetter = datatxtletter.split('');
-    let charArrTitle = titleLetter.split('');
-    let currentIndex = 0;
-    let currentIndexLetter = 0;
-    let currentIndexTitle = 0;
-    let date__of__birth = document.querySelector(".date__of__birth span");
-    let text__letter = document.querySelector(".text__letter p");
-    setTimeout(function () {
-        timeDatetxt = setInterval(function () {
-            if (currentIndex < charArrDate.length) {
-                date__of__birth.textContent += charArrDate[currentIndex];
-                currentIndex++;
-            }
-            else {
-                let i = document.createElement("i");
-                i.className = "fa-solid fa-star"
-                document.querySelector(".date__of__birth").prepend(i)
-                document.querySelector(".date__of__birth").appendChild(i.cloneNode(true))
-                clearInterval(timeDatetxt)
-            }
-        }, 100)
-    }, 12000)
 
-    var intervalContent;
-    var intervalTitle;
-    $("#btn__letter").on("click", function () {
-        $(".box__letter").slideDown()
+    <script>
+        let datetxt = "24 Juni 2026";
+        let datatxtletter = "My love. You are a very special girl. I always silently thank you for coming into my life. Today, I wish you all the best, lots of health, and lots of joy. I always hope we will celebrate many more birthdays like this together. Happy birthday to you.💕";
+        let titleLetter = "To you";
+        let charArrDate = datetxt.split('');
+        let charArrDateLetter = datatxtletter.split('');
+        let charArrTitle = titleLetter.split('');
+        let currentIndex = 0;
+        let currentIndexLetter = 0;
+        let currentIndexTitle = 0;
+        let date__of__birth = document.querySelector(".date__of__birth span");
+        let text__letter = document.querySelector(".text__letter p");
         setTimeout(function () {
-            $(".letter__border").slideDown();
-        }, 1000)
-        setTimeout(function () {
-            intervalTitle = setInterval(function () {
-                if (currentIndexTitle < charArrTitle.length) {
-                    document.querySelector(".title__letter").textContent += charArrTitle[currentIndexTitle];
-                    let i = document.createElement("i");
-                    i.className = "fa-solid fa-heart"
-                    document.querySelector(".title__letter").appendChild(i)
-                    currentIndexTitle++;
+            timeDatetxt = setInterval(function () {
+                if (currentIndex < charArrDate.length) {
+                    date__of__birth.textContent += charArrDate[currentIndex];
+                    currentIndex++;
                 }
                 else {
-                    clearInterval(intervalTitle)
+                    let i = document.createElement("i");
+                    i.className = "fa-solid fa-star"
+                    document.querySelector(".date__of__birth").prepend(i)
+                    document.querySelector(".date__of__birth").appendChild(i.cloneNode(true))
+                    clearInterval(timeDatetxt)
                 }
             }, 100)
-        }, 2000)
-        setTimeout(function () {
-            document.querySelector("#heart__letter").classList.add("animationOp");
-            document.querySelector(".love__img").classList.add("animationOp");
-            document.querySelector("#mewmew").classList.add("animationOp");
-        }, 2800)
-        setTimeout(function () {
-            document.querySelectorAll(".heart").forEach((item) => {
-                item.classList.add("animation")
-            })
-        }, 3500)
-        setTimeout(function () {
-            intervalContent = setInterval(function () {
-                if (currentIndexLetter < charArrDateLetter.length) {
-                    text__letter.textContent += charArrDateLetter[currentIndexLetter];
-                    currentIndexLetter++;
-                }
-                else {
-                    clearInterval(intervalContent)
-                }
-            }, 50)
-        }, 6000)
-    })
-    $(".close").on("click", function () {
-        clearInterval(intervalContent)
-        document.querySelector(".title__letter").textContent = "";
-        text__letter.textContent = "";
-        currentIndexLetter = 0
-        currentIndexTitle = 0
-        document.querySelector("#heart__letter").classList.remove("animationOp");
-        document.querySelector(".love__img").classList.remove("animationOp");
-        document.querySelector("#mewmew").classList.remove("animationOp");
-        document.querySelectorAll(".heart").forEach((item) => {
-            item.classList.remove("animation")
+        }, 12000)
+
+        var intervalContent;
+        var intervalTitle;
+        $("#btn__letter").on("click", function () {
+            $(".box__letter").slideDown()
+            setTimeout(function () {
+                $(".letter__border").slideDown();
+            }, 1000)
+            setTimeout(function () {
+                intervalTitle = setInterval(function () {
+                    if (currentIndexTitle < charArrTitle.length) {
+                        document.querySelector(".title__letter").textContent += charArrTitle[currentIndexTitle];
+                        let i = document.createElement("i");
+                        i.className = "fa-solid fa-heart"
+                        document.querySelector(".title__letter").appendChild(i)
+                        currentIndexTitle++;
+                    }
+                    else {
+                        clearInterval(intervalTitle)
+                    }
+                }, 100)
+            }, 2000)
+            setTimeout(function () {
+                document.querySelector("#heart__letter").classList.add("animationOp");
+                document.querySelector(".love__img").classList.add("animationOp");
+                document.querySelector("#mewmew").classList.add("animationOp");
+            }, 2800)
+            setTimeout(function () {
+                document.querySelectorAll(".heart").forEach((item) => {
+                    item.classList.add("animation")
+                })
+            }, 3500)
+            setTimeout(function () {
+                intervalContent = setInterval(function () {
+                    if (currentIndexLetter < charArrDateLetter.length) {
+                        text__letter.textContent += charArrDateLetter[currentIndexLetter];
+                        currentIndexLetter++;
+                    }
+                    else {
+                        clearInterval(intervalContent)
+                    }
+                }, 50)
+            }, 6000)
         })
-        $(".box__letter").slideUp();
-        $(".letter__border").slideUp();
-    })
+        $(".close").on("click", function () {
+            clearInterval(intervalContent)
+            document.querySelector(".title__letter").textContent = "";
+            text__letter.textContent = "";
+            currentIndexLetter = 0
+            currentIndexTitle = 0
+            document.querySelector("#heart__letter").classList.remove("animationOp");
+            document.querySelector(".love__img").classList.remove("animationOp");
+            document.querySelector("#mewmew").classList.remove("animationOp");
+            document.querySelectorAll(".heart").forEach((item) => {
+                item.classList.remove("animation")
+            })
+            $(".box__letter").slideUp();
+            $(".letter__border").slideUp();
+        })
 
+        let mailBox = document.querySelector('.mail')
+        let boxmail = document.querySelector('.boxMail')
+        var close = document.querySelector('.fa-xmark')
+        
+        if (mailBox && boxmail) { // Pengecekan aman agar tidak error
+            mailBox.onclick = function () {
+                mailBox.classList.toggle('active')
+                boxmail.classList.add('active')
+            }
 
-
-    let mailBox = document.querySelector('.mail')
-    let boxmail = document.querySelector('.boxMail')
-    var close = document.querySelector('.fa-xmark')
-    mailBox.onclick = function () {
-        mailBox.classList.toggle('active')
-        boxmail.classList.add('active')
-    }
-
-    close.addEventListener('click', function () {
-        boxmail.classList.remove('active')
-    })
-</script>
+            if(close){
+                close.addEventListener('click', function () {
+                    boxmail.classList.remove('active')
+                })
+            }
+        }
+    </script>
+</body>
 </html>
